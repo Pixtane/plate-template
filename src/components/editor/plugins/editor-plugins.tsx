@@ -43,6 +43,7 @@ import { resetBlockTypePlugin } from './reset-block-type-plugin';
 import { softBreakPlugin } from './soft-break-plugin';
 import { tablePlugin } from './table-plugin';
 import { tocPlugin } from './toc-plugin';
+import { FeatureKeys } from '../features';
 
 export const viewPlugins = [
   ...basicNodesPlugins,
@@ -74,32 +75,49 @@ export const viewPlugins = [
   commentsPlugin,
 ] as const;
 
-export const editorPlugins = [
-  // AI
-  ...aiPlugins,
+export const editorPlugins = (features?: FeatureKeys[]) => {
+  return [
+    // AI
+    ...aiPlugins,
 
-  // Nodes
-  ...viewPlugins,
+    // Nodes
+    ...viewPlugins,
 
-  // Functionality
-  SlashPlugin,
-  autoformatPlugin,
-  cursorOverlayPlugin,
-  ...blockMenuPlugins,
-  ...dndPlugins,
-  EmojiPlugin,
-  exitBreakPlugin,
-  resetBlockTypePlugin,
-  ...deletePlugins,
-  softBreakPlugin,
-  TrailingBlockPlugin.configure({ options: { type: ParagraphPlugin.key } }),
+    // Functionality
+    SlashPlugin,
+    autoformatPlugin,
+    cursorOverlayPlugin,
+    ...blockMenuPlugins,
+    ...dndPlugins,
+    EmojiPlugin,
+    exitBreakPlugin,
+    resetBlockTypePlugin,
+    ...deletePlugins,
+    softBreakPlugin,
+    TrailingBlockPlugin.configure({ options: { type: ParagraphPlugin.key } }),
 
-  // Deserialization
-  DocxPlugin,
-  MarkdownPlugin.configure({ options: { indentList: true } }),
-  JuicePlugin,
+    // Deserialization
+    DocxPlugin,
+    MarkdownPlugin.configure({ options: { indentList: true } }),
+    JuicePlugin,
 
-  // UI
-  FixedToolbarPlugin,
-  FloatingToolbarPlugin,
-];
+    // UI
+    FixedToolbarPlugin(
+      features ?? [
+        'undoRedo',
+        'bold',
+        'italic',
+        'mode',
+        'blletedIndentList',
+        'numberedIndentList',
+        'insert',
+        'emoji',
+        'links',
+        'tables',
+        'moreOptions',
+        'export',
+      ]
+    ),
+    FloatingToolbarPlugin,
+  ];
+};

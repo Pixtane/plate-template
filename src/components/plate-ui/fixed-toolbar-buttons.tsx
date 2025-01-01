@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-union-types */
 'use client';
 
 import React from 'react';
@@ -36,6 +37,7 @@ import {
 
 import { MoreDropdownMenu } from '@/components/plate-ui/more-dropdown-menu';
 
+import { FeatureKeys } from '../editor/features';
 import { AIToolbarButton } from './ai-toolbar-button';
 import { AlignDropdownMenu } from './align-dropdown-menu';
 import { ColorDropdownMenu } from './color-dropdown-menu';
@@ -62,111 +64,162 @@ import { ToggleToolbarButton } from './toggle-toolbar-button';
 import { ToolbarGroup } from './toolbar';
 import { TurnIntoDropdownMenu } from './turn-into-dropdown-menu';
 
-export function FixedToolbarButtons() {
+// Define type for enabled features
+type FixedToolbarButtonsProps = {
+  enabledFeatures?: FeatureKeys[]; // Array of feature keys to enable
+};
+
+export function FixedToolbarButtons({
+  enabledFeatures = [],
+}: FixedToolbarButtonsProps) {
   const readOnly = useEditorReadOnly();
+
+  const isFeatureEnabled = (feature: FeatureKeys) =>
+    enabledFeatures.includes(feature);
 
   return (
     <div className="flex w-full">
       {!readOnly && (
         <>
           <ToolbarGroup>
-            <UndoToolbarButton />
-            <RedoToolbarButton />
+            {isFeatureEnabled('undoRedo') && (
+              <>
+                <UndoToolbarButton />
+                <RedoToolbarButton />
+              </>
+            )}
           </ToolbarGroup>
 
           <ToolbarGroup>
-            <AIToolbarButton tooltip="AI commands">
-              <WandSparklesIcon />
-            </AIToolbarButton>
+            {isFeatureEnabled('ai') && (
+              <AIToolbarButton tooltip="AI commands">
+                <WandSparklesIcon />
+              </AIToolbarButton>
+            )}
           </ToolbarGroup>
 
           <ToolbarGroup>
-            <ExportToolbarButton>
-              <ArrowUpToLineIcon />
-            </ExportToolbarButton>
+            {isFeatureEnabled('export') && (
+              <ExportToolbarButton>
+                <ArrowUpToLineIcon />
+              </ExportToolbarButton>
+            )}
           </ToolbarGroup>
 
           <ToolbarGroup>
-            <InsertDropdownMenu />
-            <TurnIntoDropdownMenu />
-            <FontSizeToolbarButton />
+            {isFeatureEnabled('insert') && (
+              <>
+                {isFeatureEnabled('insert') && <InsertDropdownMenu />}
+                {isFeatureEnabled('turnInto') && <TurnIntoDropdownMenu />}
+                {isFeatureEnabled('fontSize') && <FontSizeToolbarButton />}
+              </>
+            )}
           </ToolbarGroup>
 
           <ToolbarGroup>
-            <MarkToolbarButton nodeType={BoldPlugin.key} tooltip="Bold (⌘+B)">
-              <BoldIcon />
-            </MarkToolbarButton>
+            {isFeatureEnabled('bold') && (
+              <MarkToolbarButton nodeType={BoldPlugin.key} tooltip="Bold (⌘+B)">
+                <BoldIcon />
+              </MarkToolbarButton>
+            )}
 
-            <MarkToolbarButton
-              nodeType={ItalicPlugin.key}
-              tooltip="Italic (⌘+I)"
-            >
-              <ItalicIcon />
-            </MarkToolbarButton>
+            {isFeatureEnabled('italic') && (
+              <MarkToolbarButton
+                nodeType={ItalicPlugin.key}
+                tooltip="Italic (⌘+I)"
+              >
+                <ItalicIcon />
+              </MarkToolbarButton>
+            )}
 
-            <MarkToolbarButton
-              nodeType={UnderlinePlugin.key}
-              tooltip="Underline (⌘+U)"
-            >
-              <UnderlineIcon />
-            </MarkToolbarButton>
+            {isFeatureEnabled('underline') && (
+              <MarkToolbarButton
+                nodeType={UnderlinePlugin.key}
+                tooltip="Underline (⌘+U)"
+              >
+                <UnderlineIcon />
+              </MarkToolbarButton>
+            )}
 
-            <MarkToolbarButton
-              nodeType={StrikethroughPlugin.key}
-              tooltip="Strikethrough (⌘+⇧+M)"
-            >
-              <StrikethroughIcon />
-            </MarkToolbarButton>
+            {isFeatureEnabled('strikethrough') && (
+              <MarkToolbarButton
+                nodeType={StrikethroughPlugin.key}
+                tooltip="Strikethrough (⌘+⇧+M)"
+              >
+                <StrikethroughIcon />
+              </MarkToolbarButton>
+            )}
 
-            <MarkToolbarButton nodeType={CodePlugin.key} tooltip="Code (⌘+E)">
-              <Code2Icon />
-            </MarkToolbarButton>
+            {isFeatureEnabled('code') && (
+              <MarkToolbarButton nodeType={CodePlugin.key} tooltip="Code (⌘+E)">
+                <Code2Icon />
+              </MarkToolbarButton>
+            )}
 
-            <ColorDropdownMenu
-              nodeType={FontColorPlugin.key}
-              tooltip="Text color"
-            >
-              <BaselineIcon />
-            </ColorDropdownMenu>
+            {isFeatureEnabled('textColor') && (
+              <ColorDropdownMenu
+                nodeType={FontColorPlugin.key}
+                tooltip="Text color"
+              >
+                <BaselineIcon />
+              </ColorDropdownMenu>
+            )}
 
-            <ColorDropdownMenu
-              nodeType={FontBackgroundColorPlugin.key}
-              tooltip="Background color"
-            >
-              <PaintBucketIcon />
-            </ColorDropdownMenu>
+            {isFeatureEnabled('backgroundColor') && (
+              <ColorDropdownMenu
+                nodeType={FontBackgroundColorPlugin.key}
+                tooltip="Background color"
+              >
+                <PaintBucketIcon />
+              </ColorDropdownMenu>
+            )}
           </ToolbarGroup>
 
           <ToolbarGroup>
-            <AlignDropdownMenu />
-
-            <NumberedIndentListToolbarButton />
-            <BulletedIndentListToolbarButton />
-            <IndentTodoToolbarButton />
-            <ToggleToolbarButton />
+            {isFeatureEnabled('alignment') && (
+              <>
+                {isFeatureEnabled('align') && <AlignDropdownMenu />}
+                {isFeatureEnabled('numberedIndentList') && (
+                  <NumberedIndentListToolbarButton />
+                )}
+                {isFeatureEnabled('blletedIndentList') && (
+                  <BulletedIndentListToolbarButton />
+                )}
+                {isFeatureEnabled('indentTodo') && <IndentTodoToolbarButton />}
+                {isFeatureEnabled('toggleToolbar') && <ToggleToolbarButton />}
+              </>
+            )}
           </ToolbarGroup>
 
           <ToolbarGroup>
-            <LinkToolbarButton />
-            <TableDropdownMenu />
-            <EmojiDropdownMenu />
+            {isFeatureEnabled('links') && <LinkToolbarButton />}
+            {isFeatureEnabled('tables') && <TableDropdownMenu />}
+            {isFeatureEnabled('emoji') && <EmojiDropdownMenu />}
           </ToolbarGroup>
 
           <ToolbarGroup>
-            <MediaToolbarButton nodeType={ImagePlugin.key} />
-            <MediaToolbarButton nodeType={VideoPlugin.key} />
-            <MediaToolbarButton nodeType={AudioPlugin.key} />
-            <MediaToolbarButton nodeType={FilePlugin.key} />
+            {isFeatureEnabled('images') && (
+              <MediaToolbarButton nodeType={ImagePlugin.key} />
+            )}
+            {isFeatureEnabled('videos') && (
+              <MediaToolbarButton nodeType={VideoPlugin.key} />
+            )}
+            {isFeatureEnabled('audio') && (
+              <MediaToolbarButton nodeType={AudioPlugin.key} />
+            )}
+            {isFeatureEnabled('file') && (
+              <MediaToolbarButton nodeType={FilePlugin.key} />
+            )}
           </ToolbarGroup>
 
           <ToolbarGroup>
-            <LineHeightDropdownMenu />
-            <OutdentToolbarButton />
-            <IndentToolbarButton />
+            {isFeatureEnabled('lineHeight') && <LineHeightDropdownMenu />}
+            {isFeatureEnabled('outdent') && <OutdentToolbarButton />}
+            {isFeatureEnabled('indent') && <IndentToolbarButton />}
           </ToolbarGroup>
 
           <ToolbarGroup>
-            <MoreDropdownMenu />
+            {isFeatureEnabled('moreOptions') && <MoreDropdownMenu />}
           </ToolbarGroup>
         </>
       )}
@@ -174,14 +227,16 @@ export function FixedToolbarButtons() {
       <div className="grow" />
 
       <ToolbarGroup>
-        <MarkToolbarButton nodeType={HighlightPlugin.key} tooltip="Highlight">
-          <HighlighterIcon />
-        </MarkToolbarButton>
-        <CommentToolbarButton />
+        {isFeatureEnabled('highlight') && (
+          <MarkToolbarButton nodeType={HighlightPlugin.key} tooltip="Highlight">
+            <HighlighterIcon />
+          </MarkToolbarButton>
+        )}
+        {isFeatureEnabled('comments') && <CommentToolbarButton />}
       </ToolbarGroup>
 
       <ToolbarGroup>
-        <ModeDropdownMenu />
+        {isFeatureEnabled('mode') && <ModeDropdownMenu />}
       </ToolbarGroup>
     </div>
   );

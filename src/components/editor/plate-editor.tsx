@@ -10,8 +10,28 @@ import { SettingsDialog } from '@/components/editor/settings';
 import { useCreateEditor } from '@/components/editor/use-create-editor';
 import { Editor, EditorContainer } from '@/components/plate-ui/editor';
 
-export function PlateEditor() {
-  const editor = useCreateEditor();
+import { type FeatureKeys } from './features';
+
+export function PlateEditor({
+  featuresGiven,
+}: {
+  featuresGiven?: FeatureKeys[];
+}) {
+  const features: FeatureKeys[] = featuresGiven ?? [
+    'undoRedo',
+    'bold',
+    'italic',
+    'mode',
+    'blletedIndentList',
+    'numberedIndentList',
+    'insert',
+    'emoji',
+    'links',
+    'tables',
+    'moreOptions',
+    'export',
+  ];
+  const editor = useCreateEditor(features);
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -20,7 +40,7 @@ export function PlateEditor() {
           <Editor variant="demo" />
         </EditorContainer>
 
-        <SettingsDialog />
+        {features.includes('aiSettings') && <SettingsDialog />}
       </Plate>
     </DndProvider>
   );

@@ -58,8 +58,6 @@ import { TogglePlugin } from '@udecode/plate-toggle/react';
 
 import { copilotPlugins } from '@/components/editor/plugins/copilot-plugins';
 import { editorPlugins } from '@/components/editor/plugins/editor-plugins';
-import { FixedToolbarPlugin } from '@/components/editor/plugins/fixed-toolbar-plugin';
-import { FloatingToolbarPlugin } from '@/components/editor/plugins/floating-toolbar-plugin';
 import { AILeaf } from '@/components/plate-ui/ai-leaf';
 import { BlockquoteElement } from '@/components/plate-ui/blockquote-element';
 import { CodeBlockElement } from '@/components/plate-ui/code-block-element';
@@ -99,7 +97,10 @@ import { TableRowElement } from '@/components/plate-ui/table-row-element';
 import { TocElement } from '@/components/plate-ui/toc-element';
 import { ToggleElement } from '@/components/plate-ui/toggle-element';
 
-export const useCreateEditor = () => {
+import { FeatureKeys } from './features';
+
+export const useCreateEditor = (features?: FeatureKeys[]) => {
+  const editorPluginsFiltered = editorPlugins(features);
   return usePlateEditor({
     override: {
       components: withPlaceholders({
@@ -151,12 +152,7 @@ export const useCreateEditor = () => {
         [VideoPlugin.key]: MediaVideoElement,
       }),
     },
-    plugins: [
-      ...copilotPlugins,
-      ...editorPlugins,
-      FixedToolbarPlugin,
-      FloatingToolbarPlugin,
-    ],
+    plugins: [...copilotPlugins, ...editorPluginsFiltered],
     value: [
       {
         children: [{ text: 'Playground' }],
