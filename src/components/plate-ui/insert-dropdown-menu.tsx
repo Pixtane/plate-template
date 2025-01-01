@@ -55,6 +55,7 @@ import {
   insertInlineElement,
 } from '@/components/editor/transforms';
 
+import { type FeatureKeys } from '../editor/features';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -71,6 +72,7 @@ type Group = {
 };
 
 interface Item {
+  featureName: FeatureKeys;
   icon: React.ReactNode;
   onSelect: (editor: PlateEditor, value: string) => void;
   value: string;
@@ -83,41 +85,49 @@ const groups: Group[] = [
     group: 'Basic blocks',
     items: [
       {
+        featureName: 'paragraph' as FeatureKeys,
         icon: <PilcrowIcon />,
         label: 'Paragraph',
         value: ParagraphPlugin.key,
       },
       {
+        featureName: 'headings123' as FeatureKeys,
         icon: <Heading1Icon />,
         label: 'Heading 1',
         value: HEADING_KEYS.h1,
       },
       {
+        featureName: 'headings123' as FeatureKeys,
         icon: <Heading2Icon />,
         label: 'Heading 2',
         value: HEADING_KEYS.h2,
       },
       {
+        featureName: 'headings123' as FeatureKeys,
         icon: <Heading3Icon />,
         label: 'Heading 3',
         value: HEADING_KEYS.h3,
       },
       {
+        featureName: 'tables' as FeatureKeys,
         icon: <TableIcon />,
         label: 'Table',
         value: TablePlugin.key,
       },
       {
+        featureName: 'code' as FeatureKeys,
         icon: <FileCodeIcon />,
         label: 'Code',
         value: CodeBlockPlugin.key,
       },
       {
+        featureName: 'blockquote' as FeatureKeys,
         icon: <QuoteIcon />,
         label: 'Quote',
         value: BlockquotePlugin.key,
       },
       {
+        featureName: 'divider' as FeatureKeys,
         icon: <MinusIcon />,
         label: 'Divider',
         value: HorizontalRulePlugin.key,
@@ -133,21 +143,25 @@ const groups: Group[] = [
     group: 'Lists',
     items: [
       {
+        featureName: 'bulletedIndentList' as FeatureKeys,
         icon: <ListIcon />,
         label: 'Bulleted list',
         value: ListStyleType.Disc,
       },
       {
+        featureName: 'numberedIndentList' as FeatureKeys,
         icon: <ListOrderedIcon />,
         label: 'Numbered list',
         value: ListStyleType.Decimal,
       },
       {
+        featureName: 'indentTodo' as FeatureKeys,
         icon: <SquareIcon />,
         label: 'To-do list',
         value: INDENT_LIST_KEYS.todo,
       },
       {
+        featureName: 'toggleList' as FeatureKeys,
         icon: <ChevronRightIcon />,
         label: 'Toggle list',
         value: TogglePlugin.key,
@@ -163,16 +177,19 @@ const groups: Group[] = [
     group: 'Media',
     items: [
       {
+        featureName: 'images' as FeatureKeys,
         icon: <ImageIcon />,
         label: 'Image',
         value: ImagePlugin.key,
       },
       {
+        featureName: 'videos' as FeatureKeys,
         icon: <FilmIcon />,
         label: 'Embed',
         value: MediaEmbedPlugin.key,
       },
       {
+        featureName: 'excalidraw' as FeatureKeys,
         icon: <PenToolIcon />,
         label: 'Excalidraw',
         value: ExcalidrawPlugin.key,
@@ -188,16 +205,19 @@ const groups: Group[] = [
     group: 'Advanced blocks',
     items: [
       {
+        featureName: 'toc' as FeatureKeys,
         icon: <TableOfContentsIcon />,
         label: 'Table of contents',
         value: TocPlugin.key,
       },
       {
+        featureName: '3column' as FeatureKeys,
         icon: <Columns3Icon />,
         label: '3 columns',
         value: 'action_three_columns',
       },
       {
+        featureName: 'block-latex' as FeatureKeys,
         focusEditor: false,
         icon: <RadicalIcon />,
         label: 'Equation',
@@ -214,17 +234,20 @@ const groups: Group[] = [
     group: 'Inline',
     items: [
       {
+        featureName: 'links' as FeatureKeys,
         icon: <Link2Icon />,
         label: 'Link',
         value: LinkPlugin.key,
       },
       {
+        featureName: 'date' as FeatureKeys,
         focusEditor: true,
         icon: <CalendarIcon />,
         label: 'Date',
         value: DatePlugin.key,
       },
       {
+        featureName: 'latex' as FeatureKeys,
         focusEditor: false,
         icon: <RadicalIcon />,
         label: 'Inline Equation',
@@ -239,7 +262,9 @@ const groups: Group[] = [
   },
 ];
 
-export function InsertDropdownMenu(props: DropdownMenuProps) {
+export function InsertDropdownMenu(
+  props: DropdownMenuProps & { features: FeatureKeys[] }
+) {
   const editor = useEditorRef();
   const openState = useOpenState();
 
@@ -257,19 +282,22 @@ export function InsertDropdownMenu(props: DropdownMenuProps) {
       >
         {groups.map(({ group, items: nestedItems }) => (
           <DropdownMenuGroup key={group} label={group}>
-            {nestedItems.map(({ icon, label, value, onSelect }) => (
-              <DropdownMenuItem
-                key={value}
-                className="min-w-[180px]"
-                onSelect={() => {
-                  onSelect(editor, value);
-                  focusEditor(editor);
-                }}
-              >
-                {icon}
-                {label}
-              </DropdownMenuItem>
-            ))}
+            {nestedItems.map(
+              ({ featureName, icon, label, value, onSelect }) =>
+                props.features.includes(featureName) && (
+                  <DropdownMenuItem
+                    key={value}
+                    className="min-w-[180px]"
+                    onSelect={() => {
+                      onSelect(editor, value);
+                      focusEditor(editor);
+                    }}
+                  >
+                    {icon}
+                    {label}
+                  </DropdownMenuItem>
+                )
+            )}
           </DropdownMenuGroup>
         ))}
       </DropdownMenuContent>

@@ -72,6 +72,7 @@
     "@udecode/plate-slash-command": "41.0.0",
     "@udecode/plate-tabbable": "41.0.0",
     "@udecode/plate-table": "41.0.9",
+    "@udecode/plate-test-utils": "^40.0.0",
     "@udecode/plate-toggle": "41.0.0",
     "@udecode/plate-trailing-block": "41.0.0",
     "@uploadthing/react": "7.1.0",

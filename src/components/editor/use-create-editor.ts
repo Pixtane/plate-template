@@ -98,8 +98,10 @@ import { TocElement } from '@/components/plate-ui/toc-element';
 import { ToggleElement } from '@/components/plate-ui/toggle-element';
 
 import { FeatureKeys } from './features';
+import { recipeTemplate } from './recipe-template';
+import { TElement } from '@udecode/plate-common';
 
-export const useCreateEditor = (features?: FeatureKeys[]) => {
+export const useCreateEditor = (features: FeatureKeys[]) => {
   const editorPluginsFiltered = editorPlugins(features);
   return usePlateEditor({
     override: {
@@ -153,21 +155,6 @@ export const useCreateEditor = (features?: FeatureKeys[]) => {
       }),
     },
     plugins: [...copilotPlugins, ...editorPluginsFiltered],
-    value: [
-      {
-        children: [{ text: 'Playground' }],
-        type: 'h1',
-      },
-      {
-        children: [
-          { text: 'A rich-text editor with AI capabilities. Try the ' },
-          { bold: true, text: 'AI commands' },
-          { text: ' or use ' },
-          { kbd: true, text: 'Cmd+J' },
-          { text: ' to open the AI menu.' },
-        ],
-        type: ParagraphPlugin.key,
-      },
-    ],
+    value: recipeTemplate as unknown as TElement[],
   });
 };

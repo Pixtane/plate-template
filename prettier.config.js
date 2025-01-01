@@ -2,7 +2,7 @@
 module.exports = {
   // Set the line ending to `lf`.
   // https://prettier.io/docs/en/options.html#end-of-line
-  endOfLine: 'lf',
+  endOfLine: 'auto',
 
   // Do not add semicolons at the end of statements.
   // Specify the parser plugins to use for import sorting.

@@ -22,7 +22,7 @@ export function PlateEditor({
     'bold',
     'italic',
     'mode',
-    'blletedIndentList',
+    'bulletedIndentList',
     'numberedIndentList',
     'insert',
     'emoji',
@@ -30,6 +30,16 @@ export function PlateEditor({
     'tables',
     'moreOptions',
     'export',
+    'blockquote',
+    'headings123',
+    'duplicate',
+    'delete',
+    'turnInto',
+    'superscript',
+    'subscript',
+    'divider',
+    'images',
+    'date',
   ];
   const editor = useCreateEditor(features);
 

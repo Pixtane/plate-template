@@ -18,6 +18,7 @@ import {
   SuperscriptIcon,
 } from 'lucide-react';
 
+import { FeatureKeys } from '../editor/features';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,9 +29,14 @@ import {
 } from './dropdown-menu';
 import { ToolbarButton } from './toolbar';
 
-export function MoreDropdownMenu(props: DropdownMenuProps) {
+export function MoreDropdownMenu(
+  props: DropdownMenuProps & { features: FeatureKeys[] }
+) {
   const editor = useEditorRef();
   const openState = useOpenState();
+
+  const isFeatureEnabled = (feature: FeatureKeys) =>
+    props.features?.includes(feature);
 
   return (
     <DropdownMenu modal={false} {...openState} {...props}>
@@ -45,43 +51,49 @@ export function MoreDropdownMenu(props: DropdownMenuProps) {
         align="start"
       >
         <DropdownMenuGroup>
-          <DropdownMenuItem
-            onSelect={() => {
-              editor.tf.toggle.mark({ key: KbdPlugin.key });
-              collapseSelection(editor, { edge: 'end' });
-              focusEditor(editor);
-            }}
-          >
-            <KeyboardIcon />
-            Keyboard input
-          </DropdownMenuItem>
+          {isFeatureEnabled('keyboardInput') && (
+            <DropdownMenuItem
+              onSelect={() => {
+                editor.tf.toggle.mark({ key: KbdPlugin.key });
+                collapseSelection(editor, { edge: 'end' });
+                focusEditor(editor);
+              }}
+            >
+              <KeyboardIcon />
+              Keyboard input
+            </DropdownMenuItem>
+          )}
 
-          <DropdownMenuItem
-            onSelect={() => {
-              editor.tf.toggle.mark({
-                key: SuperscriptPlugin.key,
-                clear: [SubscriptPlugin.key, SuperscriptPlugin.key],
-              });
-              focusEditor(editor);
-            }}
-          >
-            <SuperscriptIcon />
-            Superscript
-            {/* (⌘+,) */}
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onSelect={() => {
-              editor.tf.toggle.mark({
-                key: SubscriptPlugin.key,
-                clear: [SuperscriptPlugin.key, SubscriptPlugin.key],
-              });
-              focusEditor(editor);
-            }}
-          >
-            <SubscriptIcon />
-            Subscript
-            {/* (⌘+.) */}
-          </DropdownMenuItem>
+          {isFeatureEnabled('superscript') && (
+            <DropdownMenuItem
+              onSelect={() => {
+                editor.tf.toggle.mark({
+                  key: SuperscriptPlugin.key,
+                  clear: [SubscriptPlugin.key, SuperscriptPlugin.key],
+                });
+                focusEditor(editor);
+              }}
+            >
+              <SuperscriptIcon />
+              Superscript
+              {/* (⌘+,) */}
+            </DropdownMenuItem>
+          )}
+          {isFeatureEnabled('subscript') && (
+            <DropdownMenuItem
+              onSelect={() => {
+                editor.tf.toggle.mark({
+                  key: SubscriptPlugin.key,
+                  clear: [SuperscriptPlugin.key, SubscriptPlugin.key],
+                });
+                focusEditor(editor);
+              }}
+            >
+              <SubscriptIcon />
+              Subscript
+              {/* (⌘+.) */}
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

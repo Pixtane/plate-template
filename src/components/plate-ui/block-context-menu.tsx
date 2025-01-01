@@ -20,6 +20,7 @@ import {
 
 import { useIsTouchDevice } from '@/hooks/use-is-touch-device';
 
+import { FeatureKeys } from '../editor/features';
 import {
   ContextMenu,
   ContextMenuContent,
@@ -33,10 +34,19 @@ import {
 
 type Value = 'askAI' | null;
 
-export function BlockContextMenu({ children }: { children: React.ReactNode }) {
+export function BlockContextMenu({
+  children,
+  features,
+}: {
+  children: React.ReactNode;
+  features: FeatureKeys[];
+}) {
   const { api, editor } = useEditorPlugin(BlockMenuPlugin);
   const [value, setValue] = useState<Value>(null);
   const isTouch = useIsTouchDevice();
+
+  const isFeatureEnabled = (feature: FeatureKeys) =>
+    features?.includes(feature);
 
   const handleTurnInto = useCallback(
     (type: string) => {
@@ -110,95 +120,123 @@ export function BlockContextMenu({ children }: { children: React.ReactNode }) {
         }}
       >
         <ContextMenuGroup>
-          <ContextMenuItem
-            onClick={() => {
-              setValue('askAI');
-            }}
-          >
-            Ask AI
-          </ContextMenuItem>
-          <ContextMenuItem
-            onClick={() => {
-              editor
-                .getTransforms(BlockSelectionPlugin)
-                .blockSelection.removeNodes();
-              focusEditor(editor);
-            }}
-          >
-            Delete
-          </ContextMenuItem>
-          <ContextMenuItem
-            onClick={() => {
-              editor
-                .getTransforms(BlockSelectionPlugin)
-                .blockSelection.duplicate(
-                  editor.getApi(BlockSelectionPlugin).blockSelection.getNodes()
-                );
-            }}
-          >
-            Duplicate
-            {/* <ContextMenuShortcut>⌘ + D</ContextMenuShortcut> */}
-          </ContextMenuItem>
-          <ContextMenuSub>
-            <ContextMenuSubTrigger>Turn into</ContextMenuSubTrigger>
-            <ContextMenuSubContent className="w-48">
-              <ContextMenuItem
-                onClick={() => handleTurnInto(ParagraphPlugin.key)}
-              >
-                Paragraph
-              </ContextMenuItem>
+          {isFeatureEnabled('ai') && (
+            <ContextMenuItem
+              onClick={() => {
+                setValue('askAI');
+              }}
+            >
+              Ask AI
+            </ContextMenuItem>
+          )}
+          {isFeatureEnabled('delete') && (
+            <ContextMenuItem
+              onClick={() => {
+                editor
+                  .getTransforms(BlockSelectionPlugin)
+                  .blockSelection.removeNodes();
+                focusEditor(editor);
+              }}
+            >
+              Delete
+            </ContextMenuItem>
+          )}
+          {isFeatureEnabled('duplicate') && (
+            <ContextMenuItem
+              onClick={() => {
+                editor
+                  .getTransforms(BlockSelectionPlugin)
+                  .blockSelection.duplicate(
+                    editor
+                      .getApi(BlockSelectionPlugin)
+                      .blockSelection.getNodes()
+                  );
+              }}
+            >
+              Duplicate
+              {/* <ContextMenuShortcut>⌘ + D</ContextMenuShortcut> */}
+            </ContextMenuItem>
+          )}
+          {isFeatureEnabled('turnInto') && (
+            <ContextMenuSub>
+              <ContextMenuSubTrigger>Turn into</ContextMenuSubTrigger>
+              <ContextMenuSubContent className="w-48">
+                <ContextMenuItem
+                  onClick={() => handleTurnInto(ParagraphPlugin.key)}
+                >
+                  Paragraph
+                </ContextMenuItem>
 
-              <ContextMenuItem onClick={() => handleTurnInto(HEADING_KEYS.h1)}>
-                Heading 1
-              </ContextMenuItem>
-              <ContextMenuItem onClick={() => handleTurnInto(HEADING_KEYS.h2)}>
-                Heading 2
-              </ContextMenuItem>
-              <ContextMenuItem onClick={() => handleTurnInto(HEADING_KEYS.h3)}>
-                Heading 3
-              </ContextMenuItem>
-              <ContextMenuItem
-                onClick={() => handleTurnInto(BlockquotePlugin.key)}
-              >
-                Blockquote
-              </ContextMenuItem>
-            </ContextMenuSubContent>
-          </ContextMenuSub>
+                {isFeatureEnabled('headings123') && (
+                  <>
+                    <ContextMenuItem
+                      onClick={() => handleTurnInto(HEADING_KEYS.h1)}
+                    >
+                      Heading 1
+                    </ContextMenuItem>
+                    <ContextMenuItem
+                      onClick={() => handleTurnInto(HEADING_KEYS.h2)}
+                    >
+                      Heading 2
+                    </ContextMenuItem>
+                    <ContextMenuItem
+                      onClick={() => handleTurnInto(HEADING_KEYS.h3)}
+                    >
+                      Heading 3
+                    </ContextMenuItem>
+                  </>
+                )}
+                {isFeatureEnabled('blockquote') && (
+                  <ContextMenuItem
+                    onClick={() => handleTurnInto(BlockquotePlugin.key)}
+                  >
+                    Blockquote
+                  </ContextMenuItem>
+                )}
+              </ContextMenuSubContent>
+            </ContextMenuSub>
+          )}
         </ContextMenuGroup>
 
         <ContextMenuGroup>
-          <ContextMenuItem
-            onClick={() =>
-              editor
-                .getTransforms(BlockSelectionPlugin)
-                .blockSelection.setIndent(1)
-            }
-          >
-            Indent
-          </ContextMenuItem>
-          <ContextMenuItem
-            onClick={() =>
-              editor
-                .getTransforms(BlockSelectionPlugin)
-                .blockSelection.setIndent(-1)
-            }
-          >
-            Outdent
-          </ContextMenuItem>
-          <ContextMenuSub>
-            <ContextMenuSubTrigger>Align</ContextMenuSubTrigger>
-            <ContextMenuSubContent className="w-48">
-              <ContextMenuItem onClick={() => handleAlign('left')}>
-                Left
-              </ContextMenuItem>
-              <ContextMenuItem onClick={() => handleAlign('center')}>
-                Center
-              </ContextMenuItem>
-              <ContextMenuItem onClick={() => handleAlign('right')}>
-                Right
-              </ContextMenuItem>
-            </ContextMenuSubContent>
-          </ContextMenuSub>
+          {isFeatureEnabled('indent') && (
+            <ContextMenuItem
+              onClick={() =>
+                editor
+                  .getTransforms(BlockSelectionPlugin)
+                  .blockSelection.setIndent(1)
+              }
+            >
+              Indent
+            </ContextMenuItem>
+          )}
+          {isFeatureEnabled('indent') && (
+            <ContextMenuItem
+              onClick={() =>
+                editor
+                  .getTransforms(BlockSelectionPlugin)
+                  .blockSelection.setIndent(-1)
+              }
+            >
+              Outdent
+            </ContextMenuItem>
+          )}
+          {isFeatureEnabled('align') && (
+            <ContextMenuSub>
+              <ContextMenuSubTrigger>Align</ContextMenuSubTrigger>
+              <ContextMenuSubContent className="w-48">
+                <ContextMenuItem onClick={() => handleAlign('left')}>
+                  Left
+                </ContextMenuItem>
+                <ContextMenuItem onClick={() => handleAlign('center')}>
+                  Center
+                </ContextMenuItem>
+                <ContextMenuItem onClick={() => handleAlign('right')}>
+                  Right
+                </ContextMenuItem>
+              </ContextMenuSubContent>
+            </ContextMenuSub>
+          )}
         </ContextMenuGroup>
       </ContextMenuContent>
     </ContextMenu>

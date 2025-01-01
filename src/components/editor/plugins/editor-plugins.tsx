@@ -75,10 +75,10 @@ export const viewPlugins = [
   commentsPlugin,
 ] as const;
 
-export const editorPlugins = (features?: FeatureKeys[]) => {
+export const editorPlugins = (features: FeatureKeys[]) => {
   return [
     // AI
-    ...aiPlugins,
+    ...(features.includes('ai') ? aiPlugins : []),
 
     // Nodes
     ...viewPlugins,
@@ -87,7 +87,7 @@ export const editorPlugins = (features?: FeatureKeys[]) => {
     SlashPlugin,
     autoformatPlugin,
     cursorOverlayPlugin,
-    ...blockMenuPlugins,
+    ...blockMenuPlugins(features),
     ...dndPlugins,
     EmojiPlugin,
     exitBreakPlugin,
@@ -102,22 +102,7 @@ export const editorPlugins = (features?: FeatureKeys[]) => {
     JuicePlugin,
 
     // UI
-    FixedToolbarPlugin(
-      features ?? [
-        'undoRedo',
-        'bold',
-        'italic',
-        'mode',
-        'blletedIndentList',
-        'numberedIndentList',
-        'insert',
-        'emoji',
-        'links',
-        'tables',
-        'moreOptions',
-        'export',
-      ]
-    ),
-    FloatingToolbarPlugin,
+    FixedToolbarPlugin(features),
+    FloatingToolbarPlugin(features),
   ];
 };

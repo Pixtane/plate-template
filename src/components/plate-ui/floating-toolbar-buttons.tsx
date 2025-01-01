@@ -19,6 +19,7 @@ import {
   WandSparklesIcon,
 } from 'lucide-react';
 
+import { type FeatureKeys } from '../editor/features';
 import { AIToolbarButton } from './ai-toolbar-button';
 import { CommentToolbarButton } from './comment-toolbar-button';
 import { InlineEquationToolbarButton } from './inline-equation-toolbar-button';
@@ -28,63 +29,83 @@ import { MoreDropdownMenu } from './more-dropdown-menu';
 import { ToolbarGroup } from './toolbar';
 import { TurnIntoDropdownMenu } from './turn-into-dropdown-menu';
 
-export function FloatingToolbarButtons() {
+export function FloatingToolbarButtons({
+  features,
+}: {
+  features: FeatureKeys[];
+}) {
   const readOnly = useEditorReadOnly();
+  const isFeatureEnabled = (feature: FeatureKeys) =>
+    features?.includes(feature);
 
   return (
     <>
       {!readOnly && (
         <>
           <ToolbarGroup>
-            <AIToolbarButton tooltip="AI commands">
-              <WandSparklesIcon />
-              Ask AI
-            </AIToolbarButton>
+            {isFeatureEnabled('ai') && (
+              <AIToolbarButton tooltip="AI commands">
+                <WandSparklesIcon />
+                Ask AI
+              </AIToolbarButton>
+            )}
           </ToolbarGroup>
 
           <ToolbarGroup>
-            <TurnIntoDropdownMenu />
+            {isFeatureEnabled('turnInto') && (
+              <TurnIntoDropdownMenu features={features} />
+            )}
 
-            <MarkToolbarButton nodeType={BoldPlugin.key} tooltip="Bold (⌘+B)">
-              <BoldIcon />
-            </MarkToolbarButton>
+            {isFeatureEnabled('bold') && (
+              <MarkToolbarButton nodeType={BoldPlugin.key} tooltip="Bold (⌘+B)">
+                <BoldIcon />
+              </MarkToolbarButton>
+            )}
 
-            <MarkToolbarButton
-              nodeType={ItalicPlugin.key}
-              tooltip="Italic (⌘+I)"
-            >
-              <ItalicIcon />
-            </MarkToolbarButton>
+            {isFeatureEnabled('italic') && (
+              <MarkToolbarButton
+                nodeType={ItalicPlugin.key}
+                tooltip="Italic (⌘+I)"
+              >
+                <ItalicIcon />
+              </MarkToolbarButton>
+            )}
 
-            <MarkToolbarButton
-              nodeType={UnderlinePlugin.key}
-              tooltip="Underline (⌘+U)"
-            >
-              <UnderlineIcon />
-            </MarkToolbarButton>
+            {isFeatureEnabled('underline') && (
+              <MarkToolbarButton
+                nodeType={UnderlinePlugin.key}
+                tooltip="Underline (⌘+U)"
+              >
+                <UnderlineIcon />
+              </MarkToolbarButton>
+            )}
 
-            <MarkToolbarButton
-              nodeType={StrikethroughPlugin.key}
-              tooltip="Strikethrough (⌘+⇧+M)"
-            >
-              <StrikethroughIcon />
-            </MarkToolbarButton>
+            {isFeatureEnabled('strikethrough') && (
+              <MarkToolbarButton
+                nodeType={StrikethroughPlugin.key}
+                tooltip="Strikethrough (⌘+⇧+M)"
+              >
+                <StrikethroughIcon />
+              </MarkToolbarButton>
+            )}
 
-            <MarkToolbarButton nodeType={CodePlugin.key} tooltip="Code (⌘+E)">
-              <Code2Icon />
-            </MarkToolbarButton>
+            {isFeatureEnabled('code') && (
+              <MarkToolbarButton nodeType={CodePlugin.key} tooltip="Code (⌘+E)">
+                <Code2Icon />
+              </MarkToolbarButton>
+            )}
 
-            <InlineEquationToolbarButton />
+            {isFeatureEnabled('latex') && <InlineEquationToolbarButton />}
 
-            <LinkToolbarButton />
+            {isFeatureEnabled('links') && <LinkToolbarButton />}
           </ToolbarGroup>
         </>
       )}
 
       <ToolbarGroup>
-        <CommentToolbarButton />
+        {isFeatureEnabled('comments') && <CommentToolbarButton />}
 
-        {!readOnly && <MoreDropdownMenu />}
+        {!readOnly && <MoreDropdownMenu features={features} />}
       </ToolbarGroup>
     </>
   );

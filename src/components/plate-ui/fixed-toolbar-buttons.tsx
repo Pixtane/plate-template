@@ -109,8 +109,12 @@ export function FixedToolbarButtons({
           <ToolbarGroup>
             {isFeatureEnabled('insert') && (
               <>
-                {isFeatureEnabled('insert') && <InsertDropdownMenu />}
-                {isFeatureEnabled('turnInto') && <TurnIntoDropdownMenu />}
+                {isFeatureEnabled('insert') && (
+                  <InsertDropdownMenu features={enabledFeatures} />
+                )}
+                {isFeatureEnabled('turnInto') && (
+                  <TurnIntoDropdownMenu features={enabledFeatures} />
+                )}
                 {isFeatureEnabled('fontSize') && <FontSizeToolbarButton />}
               </>
             )}
@@ -182,7 +186,7 @@ export function FixedToolbarButtons({
                 {isFeatureEnabled('numberedIndentList') && (
                   <NumberedIndentListToolbarButton />
                 )}
-                {isFeatureEnabled('blletedIndentList') && (
+                {isFeatureEnabled('bulletedIndentList') && (
                   <BulletedIndentListToolbarButton />
                 )}
                 {isFeatureEnabled('indentTodo') && <IndentTodoToolbarButton />}
@@ -219,7 +223,9 @@ export function FixedToolbarButtons({
           </ToolbarGroup>
 
           <ToolbarGroup>
-            {isFeatureEnabled('moreOptions') && <MoreDropdownMenu />}
+            {isFeatureEnabled('moreOptions') && (
+              <MoreDropdownMenu features={enabledFeatures} />
+            )}
           </ToolbarGroup>
         </>
       )}

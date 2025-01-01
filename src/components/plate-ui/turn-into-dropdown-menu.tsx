@@ -35,6 +35,7 @@ import {
   setBlockType,
 } from '@/components/editor/transforms';
 
+import { type FeatureKeys } from '../editor/features';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,75 +46,96 @@ import {
 } from './dropdown-menu';
 import { ToolbarButton } from './toolbar';
 
-const turnIntoItems = [
+type TurnIntoItem = {
+  featureName: FeatureKeys;
+  icon: React.JSX.Element;
+  label: string;
+  value: string;
+  keywords?: string[];
+};
+
+const turnIntoItems: TurnIntoItem[] = [
   {
+    featureName: 'paragraph',
     icon: <PilcrowIcon />,
     keywords: ['paragraph'],
     label: 'Text',
     value: ParagraphPlugin.key,
   },
   {
+    featureName: 'headings123',
     icon: <Heading1Icon />,
     keywords: ['title', 'h1'],
     label: 'Heading 1',
     value: HEADING_KEYS.h1,
   },
   {
+    featureName: 'headings123',
     icon: <Heading2Icon />,
     keywords: ['subtitle', 'h2'],
     label: 'Heading 2',
     value: HEADING_KEYS.h2,
   },
   {
+    featureName: 'headings123',
     icon: <Heading3Icon />,
     keywords: ['subtitle', 'h3'],
     label: 'Heading 3',
     value: HEADING_KEYS.h3,
   },
   {
+    featureName: 'bulletedIndentList',
     icon: <ListIcon />,
     keywords: ['unordered', 'ul', '-'],
     label: 'Bulleted list',
     value: ListStyleType.Disc,
   },
   {
+    featureName: 'numberedIndentList',
     icon: <ListOrderedIcon />,
     keywords: ['ordered', 'ol', '1'],
     label: 'Numbered list',
     value: ListStyleType.Decimal,
   },
   {
+    featureName: 'indentTodo',
     icon: <SquareIcon />,
     keywords: ['checklist', 'task', 'checkbox', '[]'],
     label: 'To-do list',
     value: INDENT_LIST_KEYS.todo,
   },
   {
+    featureName: 'toggleList',
     icon: <ChevronRightIcon />,
     keywords: ['collapsible', 'expandable'],
     label: 'Toggle list',
     value: TogglePlugin.key,
   },
   {
+    featureName: 'code',
     icon: <FileCodeIcon />,
     keywords: ['```'],
     label: 'Code',
     value: CodeBlockPlugin.key,
   },
   {
+    featureName: 'blockquote',
     icon: <QuoteIcon />,
     keywords: ['citation', 'blockquote', '>'],
     label: 'Quote',
     value: BlockquotePlugin.key,
   },
   {
+    featureName: '3column',
     icon: <Columns3Icon />,
     label: '3 columns',
     value: 'action_three_columns',
   },
 ];
 
-export function TurnIntoDropdownMenu(props: DropdownMenuProps) {
+export function TurnIntoDropdownMenu(
+  props: DropdownMenuProps & { features: FeatureKeys[] }
+) {
   const editor = useEditorRef();
   const openState = useOpenState();
 
@@ -153,16 +175,22 @@ export function TurnIntoDropdownMenu(props: DropdownMenuProps) {
           }}
           label="Turn into"
         >
-          {turnIntoItems.map(({ icon, label, value: itemValue }) => (
-            <DropdownMenuRadioItem
-              key={itemValue}
-              className="min-w-[180px]"
-              value={itemValue}
-            >
-              {icon}
-              {label}
-            </DropdownMenuRadioItem>
-          ))}
+          {turnIntoItems.map(
+            ({ featureName, icon, label, value: itemValue }) => {
+              return (
+                props.features.includes(featureName) && (
+                  <DropdownMenuRadioItem
+                    key={itemValue}
+                    className="min-w-[180px]"
+                    value={itemValue}
+                  >
+                    {icon}
+                    {label}
+                  </DropdownMenuRadioItem>
+                )
+              );
+            }
+          )}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
