@@ -12,38 +12,40 @@ import { Editor, EditorContainer } from '@/components/plate-ui/editor';
 
 import { type FeatureKeys } from './features';
 
+export const defaultFeatures: FeatureKeys[] = [
+  'undoRedo',
+  'bold',
+  'italic',
+  'mode',
+  'bulletedIndentList',
+  'numberedIndentList',
+  'insert',
+  'emoji',
+  'links',
+  'tables',
+  'moreOptions',
+  'export',
+  'blockquote',
+  'headings123',
+  'duplicate',
+  'delete',
+  'turnInto',
+  'superscript',
+  'subscript',
+  'divider',
+  'images',
+  'date',
+  'placeholderPlugin',
+  'mentions',
+  'floatingToolbar',
+];
+
 export function PlateEditor({
   featuresGiven,
 }: {
   featuresGiven?: FeatureKeys[];
 }) {
-  const features: FeatureKeys[] = featuresGiven ?? [
-    'undoRedo',
-    'bold',
-    'italic',
-    'mode',
-    'bulletedIndentList',
-    'numberedIndentList',
-    'insert',
-    'emoji',
-    'links',
-    'tables',
-    'moreOptions',
-    'export',
-    'blockquote',
-    'headings123',
-    'duplicate',
-    'delete',
-    'turnInto',
-    'superscript',
-    'subscript',
-    'divider',
-    'images',
-    'date',
-    'placeholderPlugin',
-    'mentions',
-    'floatingToolbar',
-  ];
+  const features: FeatureKeys[] = featuresGiven ?? defaultFeatures;
   const editor = useCreateEditor(features);
 
   return (
@@ -57,4 +59,9 @@ export function PlateEditor({
       </Plate>
     </DndProvider>
   );
+}
+
+export function usePlateEditor(featuresGiven?: FeatureKeys[]) {
+  const features: FeatureKeys[] = featuresGiven ?? defaultFeatures;
+  return useCreateEditor(features);
 }
