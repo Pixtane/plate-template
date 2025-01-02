@@ -4,6 +4,7 @@ export type FeatureKeys =
   | 'aiSettings' // Settings button (bottom-right)
   | 'align'
   | 'alignment'
+  | 'floatingToolbar'
   | 'divider'
   | 'audio'
   | 'backgroundColor'
@@ -41,6 +42,7 @@ export type FeatureKeys =
   | 'duplicate' // Context-menu
   | 'blockquote' // Context-menu
   | 'headings123' // h1 h2 h3
+  | 'headings456' // h4 h5 h6
   | 'turnIntoDisabled'
   | 'videos'
   | 'latex' // "inline equation"
@@ -50,4 +52,7 @@ export type FeatureKeys =
   | 'subscript'
   | 'excalidraw'
   | 'toc'
-  | 'date';
+  | 'date'
+  | 'slashCommands'
+  | 'placeholderPlugin'
+  | 'mentions';

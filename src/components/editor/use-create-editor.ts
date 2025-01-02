@@ -103,56 +103,134 @@ import { TElement } from '@udecode/plate-common';
 
 export const useCreateEditor = (features: FeatureKeys[]) => {
   const editorPluginsFiltered = editorPlugins(features);
+  const SlashInputElementFiltered = SlashInputElement(features);
+
+  const isFeatureEnabled = (key: FeatureKeys) =>
+    features.includes(key as FeatureKeys);
+
+  const components = {
+    ...(isFeatureEnabled('ai') && { [AIPlugin.key]: AILeaf }),
+    ...(isFeatureEnabled('audio') && { [AudioPlugin.key]: MediaAudioElement }),
+    ...(isFeatureEnabled('blockquote') && {
+      [BlockquotePlugin.key]: BlockquoteElement,
+    }),
+    ...(isFeatureEnabled('bold') && {
+      [BoldPlugin.key]: withProps(PlateLeaf, { as: 'strong' }),
+    }),
+    ...(isFeatureEnabled('code') && {
+      [CodeBlockPlugin.key]: CodeBlockElement,
+    }),
+    ...(isFeatureEnabled('code') && {
+      [CodeLinePlugin.key]: CodeLineElement,
+    }),
+    ...(isFeatureEnabled('code') && { [CodePlugin.key]: CodeLeaf }),
+    ...(isFeatureEnabled('code') && {
+      [CodeSyntaxPlugin.key]: CodeSyntaxLeaf,
+    }),
+    ...(isFeatureEnabled('3column') && {
+      [ColumnItemPlugin.key]: ColumnElement,
+    }),
+    ...(isFeatureEnabled('3column') && {
+      [ColumnPlugin.key]: ColumnGroupElement,
+    }),
+    ...(isFeatureEnabled('comments') && { [CommentsPlugin.key]: CommentLeaf }),
+    ...(isFeatureEnabled('date') && { [DatePlugin.key]: DateElement }),
+    ...(isFeatureEnabled('emoji') && {
+      [EmojiInputPlugin.key]: EmojiInputElement,
+    }),
+    ...(isFeatureEnabled('block-latex') && {
+      [EquationPlugin.key]: EquationElement,
+    }),
+    ...(isFeatureEnabled('excalidraw') && {
+      [ExcalidrawPlugin.key]: ExcalidrawElement,
+    }),
+    ...(isFeatureEnabled('file') && { [FilePlugin.key]: MediaFileElement }),
+    ...(isFeatureEnabled('headings123') && {
+      [HEADING_KEYS.h1]: withProps(HeadingElement, { variant: 'h1' }),
+    }),
+    ...(isFeatureEnabled('headings123') && {
+      [HEADING_KEYS.h2]: withProps(HeadingElement, { variant: 'h2' }),
+    }),
+    ...(isFeatureEnabled('headings123') && {
+      [HEADING_KEYS.h3]: withProps(HeadingElement, { variant: 'h3' }),
+    }),
+    ...(isFeatureEnabled('headings456') && {
+      [HEADING_KEYS.h4]: withProps(HeadingElement, { variant: 'h4' }),
+    }),
+    ...(isFeatureEnabled('headings456') && {
+      [HEADING_KEYS.h5]: withProps(HeadingElement, { variant: 'h5' }),
+    }),
+    ...(isFeatureEnabled('headings456') && {
+      [HEADING_KEYS.h6]: withProps(HeadingElement, { variant: 'h6' }),
+    }),
+    ...(isFeatureEnabled('highlight') && {
+      [HighlightPlugin.key]: HighlightLeaf,
+    }),
+    ...(isFeatureEnabled('divider') && {
+      [HorizontalRulePlugin.key]: HrElement,
+    }),
+    ...(isFeatureEnabled('images') && { [ImagePlugin.key]: ImageElement }),
+    ...(isFeatureEnabled('latex') && {
+      [InlineEquationPlugin.key]: InlineEquationElement,
+    }),
+    ...(isFeatureEnabled('italic') && {
+      [ItalicPlugin.key]: withProps(PlateLeaf, { as: 'em' }),
+    }),
+    ...(isFeatureEnabled('keyboardInput') && { [KbdPlugin.key]: KbdLeaf }),
+    ...(isFeatureEnabled('links') && { [LinkPlugin.key]: LinkElement }),
+    ...((isFeatureEnabled('images') ||
+      isFeatureEnabled('videos') ||
+      isFeatureEnabled('audio') ||
+      isFeatureEnabled('file')) && {
+      [MediaEmbedPlugin.key]: MediaEmbedElement,
+    }),
+    ...(isFeatureEnabled('mentions') && {
+      [MentionInputPlugin.key]: MentionInputElement,
+    }),
+    ...(isFeatureEnabled('mentions') && {
+      [MentionPlugin.key]: MentionElement,
+    }),
+    ...(isFeatureEnabled('paragraph') && {
+      [ParagraphPlugin.key]: ParagraphElement,
+    }),
+    ...(isFeatureEnabled('placeholderPlugin') && {
+      [PlaceholderPlugin.key]: MediaPlaceholderElement,
+    }),
+    ...(isFeatureEnabled('slashCommands') && {
+      [SlashInputPlugin.key]: SlashInputElementFiltered,
+    }),
+    ...(isFeatureEnabled('strikethrough') && {
+      [StrikethroughPlugin.key]: withProps(PlateLeaf, { as: 's' }),
+    }),
+    ...(isFeatureEnabled('subscript') && {
+      [SubscriptPlugin.key]: withProps(PlateLeaf, { as: 'sub' }),
+    }),
+    ...(isFeatureEnabled('superscript') && {
+      [SuperscriptPlugin.key]: withProps(PlateLeaf, { as: 'sup' }),
+    }),
+    ...(isFeatureEnabled('tables') && {
+      [TableCellHeaderPlugin.key]: TableCellHeaderElement,
+    }),
+    ...(isFeatureEnabled('tables') && {
+      [TableCellPlugin.key]: TableCellElement,
+    }),
+    ...(isFeatureEnabled('tables') && { [TablePlugin.key]: TableElement }),
+    ...(isFeatureEnabled('tables') && {
+      [TableRowPlugin.key]: TableRowElement,
+    }),
+    ...(isFeatureEnabled('toc') && { [TocPlugin.key]: TocElement }),
+    ...(isFeatureEnabled('toggleList') && {
+      [TogglePlugin.key]: ToggleElement,
+    }),
+    ...(isFeatureEnabled('underline') && {
+      [UnderlinePlugin.key]: withProps(PlateLeaf, { as: 'u' }),
+    }),
+    ...(isFeatureEnabled('videos') && { [VideoPlugin.key]: MediaVideoElement }),
+  };
+
   return usePlateEditor({
     override: {
-      components: withPlaceholders({
-        [AIPlugin.key]: AILeaf,
-        [AudioPlugin.key]: MediaAudioElement,
-        [BlockquotePlugin.key]: BlockquoteElement,
-        [BoldPlugin.key]: withProps(PlateLeaf, { as: 'strong' }),
-        [CodeBlockPlugin.key]: CodeBlockElement,
-        [CodeLinePlugin.key]: CodeLineElement,
-        [CodePlugin.key]: CodeLeaf,
-        [CodeSyntaxPlugin.key]: CodeSyntaxLeaf,
-        [ColumnItemPlugin.key]: ColumnElement,
-        [ColumnPlugin.key]: ColumnGroupElement,
-        [CommentsPlugin.key]: CommentLeaf,
-        [DatePlugin.key]: DateElement,
-        [EmojiInputPlugin.key]: EmojiInputElement,
-        [EquationPlugin.key]: EquationElement,
-        [ExcalidrawPlugin.key]: ExcalidrawElement,
-        [FilePlugin.key]: MediaFileElement,
-        [HEADING_KEYS.h1]: withProps(HeadingElement, { variant: 'h1' }),
-        [HEADING_KEYS.h2]: withProps(HeadingElement, { variant: 'h2' }),
-        [HEADING_KEYS.h3]: withProps(HeadingElement, { variant: 'h3' }),
-        [HEADING_KEYS.h4]: withProps(HeadingElement, { variant: 'h4' }),
-        [HEADING_KEYS.h5]: withProps(HeadingElement, { variant: 'h5' }),
-        [HEADING_KEYS.h6]: withProps(HeadingElement, { variant: 'h6' }),
-        [HighlightPlugin.key]: HighlightLeaf,
-        [HorizontalRulePlugin.key]: HrElement,
-        [ImagePlugin.key]: ImageElement,
-        [InlineEquationPlugin.key]: InlineEquationElement,
-        [ItalicPlugin.key]: withProps(PlateLeaf, { as: 'em' }),
-        [KbdPlugin.key]: KbdLeaf,
-        [LinkPlugin.key]: LinkElement,
-        [MediaEmbedPlugin.key]: MediaEmbedElement,
-        [MentionInputPlugin.key]: MentionInputElement,
-        [MentionPlugin.key]: MentionElement,
-        [ParagraphPlugin.key]: ParagraphElement,
-        [PlaceholderPlugin.key]: MediaPlaceholderElement,
-        [SlashInputPlugin.key]: SlashInputElement,
-        [StrikethroughPlugin.key]: withProps(PlateLeaf, { as: 's' }),
-        [SubscriptPlugin.key]: withProps(PlateLeaf, { as: 'sub' }),
-        [SuperscriptPlugin.key]: withProps(PlateLeaf, { as: 'sup' }),
-        [TableCellHeaderPlugin.key]: TableCellHeaderElement,
-        [TableCellPlugin.key]: TableCellElement,
-        [TablePlugin.key]: TableElement,
-        [TableRowPlugin.key]: TableRowElement,
-        [TocPlugin.key]: TocElement,
-        [TogglePlugin.key]: ToggleElement,
-        [UnderlinePlugin.key]: withProps(PlateLeaf, { as: 'u' }),
-        [VideoPlugin.key]: MediaVideoElement,
-      }),
+      components: withPlaceholders(components),
     },
     plugins: [...copilotPlugins, ...editorPluginsFiltered],
     value: recipeTemplate as unknown as TElement[],

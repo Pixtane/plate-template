@@ -76,20 +76,24 @@ export const viewPlugins = [
 ] as const;
 
 export const editorPlugins = (features: FeatureKeys[]) => {
-  return [
+  const isFeatureEnabled = (key: FeatureKeys) =>
+    features.includes(key as FeatureKeys);
+
+  const plugins = [
     // AI
-    ...(features.includes('ai') ? aiPlugins : []),
+    ...(isFeatureEnabled('ai') ? aiPlugins : []),
 
     // Nodes
     ...viewPlugins,
 
     // Functionality
-    SlashPlugin,
+
+    ...(isFeatureEnabled('slashCommands') ? [SlashPlugin] : []),
     autoformatPlugin,
     cursorOverlayPlugin,
     ...blockMenuPlugins(features),
     ...dndPlugins,
-    EmojiPlugin,
+    ...(isFeatureEnabled('emoji') ? [EmojiPlugin] : []),
     exitBreakPlugin,
     resetBlockTypePlugin,
     ...deletePlugins,
@@ -103,6 +107,9 @@ export const editorPlugins = (features: FeatureKeys[]) => {
 
     // UI
     FixedToolbarPlugin(features),
-    FloatingToolbarPlugin(features),
+    ...(isFeatureEnabled('floatingToolbar')
+      ? [FloatingToolbarPlugin(features)]
+      : []),
   ];
+  return plugins;
 };

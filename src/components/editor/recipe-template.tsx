@@ -38,6 +38,11 @@ export const recipeTemplate = (
         </hth>
         <hth>
           <hp>
+            <htext bold>Weight</htext>
+          </hp>
+        </hth>
+        <hth>
+          <hp>
             <htext bold>Notes</htext>
           </hp>
         </hth>
@@ -48,6 +53,9 @@ export const recipeTemplate = (
         </htd>
         <htd>
           <hp>2 medium</hp>
+        </htd>
+        <htd>
+          <hp>250 g</hp>
         </htd>
         <htd>
           <hp>Fresh or canned?</hp>

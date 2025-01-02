@@ -40,6 +40,9 @@ export function PlateEditor({
     'divider',
     'images',
     'date',
+    'placeholderPlugin',
+    'mentions',
+    'floatingToolbar',
   ];
   const editor = useCreateEditor(features);
 
