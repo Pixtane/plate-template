@@ -55,4 +55,5 @@ export type FeatureKeys =
   | 'date'
   | 'slashCommands'
   | 'placeholderPlugin'
-  | 'mentions';
+  | 'mentions'
+  | 'singleLine'; // For one-line inputs

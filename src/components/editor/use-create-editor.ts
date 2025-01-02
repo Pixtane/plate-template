@@ -10,12 +10,14 @@ import {
   UnderlinePlugin,
 } from '@udecode/plate-basic-marks/react';
 import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
+import { SingleLinePlugin } from '@udecode/plate-break/react';
 import {
   CodeBlockPlugin,
   CodeLinePlugin,
   CodeSyntaxPlugin,
 } from '@udecode/plate-code-block/react';
 import { CommentsPlugin } from '@udecode/plate-comments/react';
+import { TElement } from '@udecode/plate-common';
 import {
   ParagraphPlugin,
   PlateLeaf,
@@ -99,7 +101,6 @@ import { ToggleElement } from '@/components/plate-ui/toggle-element';
 
 import { FeatureKeys } from './features';
 import { recipeTemplate } from './recipe-template';
-import { TElement } from '@udecode/plate-common';
 
 export const useCreateEditor = (features: FeatureKeys[]) => {
   const editorPluginsFiltered = editorPlugins(features);
@@ -232,7 +233,11 @@ export const useCreateEditor = (features: FeatureKeys[]) => {
     override: {
       components: withPlaceholders(components),
     },
-    plugins: [...copilotPlugins, ...editorPluginsFiltered],
+    plugins: [
+      ...(isFeatureEnabled('ai') ? copilotPlugins : []),
+      ...editorPluginsFiltered,
+      ...(isFeatureEnabled('singleLine') ? [SingleLinePlugin] : []),
+    ],
     value: recipeTemplate as unknown as TElement[],
   });
 };
